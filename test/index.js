@@ -1,6 +1,6 @@
 //sample test
 //Para rodar os testes, use: npm test
-//PS: Os testes não estão completos e alguns podem comnter erros.
+//PS: Os testes não estão completos e alguns podem conter erros.
 
 // veja mais infos em:
 //https://mochajs.org/
@@ -81,7 +81,7 @@ describe('Testes da aplicaçao',  () => {
             done();
         });
     });
-    //...adicionar pelo menos mais 5 usuarios. se adicionar usuario menor de idade, deve dar erro. Ps: não criar o usuario naoExiste
+    //...adicionar pelo menos mais 5 usuários. Se adicionar usuário menor de idade, deve dar erro. Ps: não criar o usuário naoExiste
 
     it('o usuario naoExiste não existe no sistema', function (done) {
         chai.request(app)
