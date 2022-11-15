@@ -5,6 +5,9 @@
 //https://github.com/ZijianHe/koa-router
 
 // todas as configuraçoes devem ser passadas via environment variables
+const User = require('./users/User');
+global.usersList = [];
+
 const PORT = process.env.PORT || 3000;
 
 const Koa = require('koa');
@@ -22,7 +25,7 @@ router.get('/', async (ctx) => {
 //As rotas devem ficar em arquivos separados, /src/controllers/userController.js por exemplo
 router.get('/users', async (ctx) => {
     ctx.status = 200;
-    ctx.body = {total:0, count: 0, rows:[]}
+  ctx.body = { total: 0, count: 0, rows: global.usersList }
 });
 
 koa
