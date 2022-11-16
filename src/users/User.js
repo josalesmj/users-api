@@ -1,12 +1,11 @@
 module.exports = class User {
-  fields = {
-    name: null,
-    email: null,
-    age: null
-  };
+  nome = null;
+  email = null;
+  idade = null;
 
   constructor(user) {
-    this.fields = user
-    console.log(this.fields);
+    this.nome = user.nome
+    this.email = user.email
+    this.idade = user.idade
   }
 }
