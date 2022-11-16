@@ -101,6 +101,63 @@ router.get('/user/:nome', async (ctx) => {
   }
 });
 
+router.put('/user/:nome', async (ctx) => {
+  let status = undefined;
+  let body = '';
+  try {
+    const userIndex = global.usersList.findIndex(({ nome }) => nome === ctx.request.params.nome);
+    if (userIndex == -1) {
+      const err = {
+        status: 404,
+        message: 'User not found'
+      }
+      throw err;
+    }
+    let user = new User(ctx.request.body);
+    global.usersList[userIndex] = user;
+    status = 200;
+    body = { message: 'User updated' };
+  }
+  catch (err) {
+    status = err.status == undefined ? 500 : err.status;
+    body = { err: err };
+  }
+  finally {
+    ctx.status = status;
+    ctx.body = body;
+  }
+});
+
+router.patch('/user/:nome', async (ctx) => {
+  let status = undefined;
+  let body = '';
+  try {
+    const userIndex = global.usersList.findIndex(({ nome }) => nome === ctx.request.params.nome);
+    if (userIndex == -1) {
+      const err = {
+        status: 404,
+        message: 'User not found'
+      }
+      throw err;
+    }
+    for ([key,] of Object.entries(ctx.request.body)) {
+      if (global.usersList[userIndex][key] != undefined) {
+        global.usersList[userIndex][key] = ctx.request.body[key];
+      }
+    }
+    status = 200;
+    body = { message: 'User updated' };
+  }
+  catch (err) {
+    status = err.status == undefined ? 500 : err.status;
+    body = { err: err };
+  }
+  finally {
+    ctx.status = status;
+    ctx.body = body;
+  }
+});
+
 router.delete('/user/:nome', async (ctx) => {
   let status = undefined;
   let body = '';
