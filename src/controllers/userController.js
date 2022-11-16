@@ -3,6 +3,7 @@ const router = new Router();
 const User = require('../users/User');
 
 global.usersList = [];
+global.forbiddenNames = ['naoexiste','nãoexiste'];
 
 router.get('/users', async (ctx) => {
   let status = undefined;
@@ -39,10 +40,17 @@ router.post('/user', async (ctx) => {
       }
       throw err;
     }
+    else if (global.forbiddenNames.find( badNames => badNames === ctx.request.body.nome.toLowerCase())) {
+      const err = {
+        status: 403,
+        message: `Forbidden. The name ${ctx.request.body.nome} is not allowed`
+      }
+      throw err;
+    }
     else if (ctx.request.body.idade < 18) {
       const err = {
         status: 403,
-        message: 'User must be at least 18 old'
+        message: 'Forbidden. User must be at least 18 old'
       }
       throw err;
     }
