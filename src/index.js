@@ -11,7 +11,7 @@ const Koa = require('koa');
 const Router = require('koa-router');
 const bodyParser = require('koa-bodyparser');
 
-const userController = require('./controllers/userController');
+const userRoute = require('./routes/user');
 const dbConnection = require('./database/index');
 
 const koa = new Koa();
@@ -34,8 +34,8 @@ koa
   .use(bodyParser())
   .use(router.routes())
   .use(router.allowedMethods())
-  .use(userController.routes())
-  .use(userController.allowedMethods());
+  .use(userRoute.routes())
+  .use(userRoute.allowedMethods());
 
 const server = koa.listen(PORT);
 

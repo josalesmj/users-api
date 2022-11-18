@@ -1,187 +1,157 @@
-const Router = require('koa-router');
-const router = new Router();
+//const UserService = require('');
 const User = require('../users/User');
+class UserController {
 
-global.usersList = [];
-global.forbiddenNames = ['naoexiste','nãoexiste'];
+  usersList = null;
 
-router.get('/users', async (ctx) => {
-  let status = undefined;
-  let body = '';
-  try {
-    if (!global.usersList) {
-      const err = {
-        status: 500,
-        message: 'Something went wrong'
-      }
-      throw err;
-    }
-    status = 200;
-    body = { total: global.usersList.length, count: 0, rows: global.usersList }
+  constructor() {
+    this.usersList = [];
   }
-  catch (err) {
-    status = err.status == undefined ? 500 : err.status;
-    body = { err: err };
-  }
-  finally {
-    ctx.status = status;
-    ctx.body = body;
-  }
-});
 
-router.post('/user', async (ctx) => {
-  let status = undefined;
-  let body = '';
-  try {
-    if (ctx.request.body.nome == undefined || ctx.request.body.email == undefined || ctx.request.body.idade == undefined) {
-      const err = {
-        status: 400,
-        message: 'Bad Request. Name, email and age are necessary'
+  async create(ctx) {
+    let status = undefined;
+    let body = '';
+    try {
+      if (ctx.request.body.nome == undefined || ctx.request.body.email == undefined || ctx.request.body.idade == undefined) {
+        const err = {
+          status: 400,
+          message: 'Bad Request. Name, email and age are necessary'
+        }
+        throw err;
       }
-      throw err;
-    }
-    else if (global.forbiddenNames.find( badNames => badNames === ctx.request.body.nome.toLowerCase())) {
-      const err = {
-        status: 403,
-        message: `Forbidden. The name ${ctx.request.body.nome} is not allowed`
+      else if (ctx.request.body.idade < 18) {
+        const err = {
+          status: 403,
+          message: 'Forbidden. User must be at least 18 old'
+        }
+        throw err;
       }
-      throw err;
-    }
-    else if (ctx.request.body.idade < 18) {
-      const err = {
-        status: 403,
-        message: 'Forbidden. User must be at least 18 old'
+      else if (this.usersList.find(({ nome }) => nome === ctx.request.body.nome)) {
+        const err = {
+          status: 409,
+          message: 'Conflict. User already exists'
+        }
+        throw err;
       }
-      throw err;
+      let user = new User(ctx.request.body);
+      this.usersList.push(user);
+      status = 201;
+      body = { message: 'User created' };
     }
-    else if (global.usersList.find(({ nome }) => nome === ctx.request.body.nome)) {
-      const err = {
-        status: 409,
-        message: 'Conflict. User already exists'
-      }
-      throw err;
+    catch (err) {
+      status = err.status == undefined ? 500 : err.status;
+      body = { err: err };
     }
-    let user = new User(ctx.request.body);
-    global.usersList.push(user);
-    status = 201;
-    body = { message: 'User created' };
+    finally {
+      ctx.status = status;
+      ctx.body = body;
+    }
   }
-  catch (err) {
-    status = err.status == undefined ? 500 : err.status;
-    body = { err: err };
-  }
-  finally {
-    ctx.status = status;
-    ctx.body = body;
-  }
-});
 
-router.get('/user/:nome', async (ctx) => {
-  let status = undefined;
-  let body = '';
-  try {
-    const user = global.usersList.find(({ nome }) => nome === ctx.request.params.nome);
-    if (!user) {
-      const err = {
-        status: 404,
-        message: 'User not found'
+  async update(ctx) {
+    let status = undefined;
+    let body = '';
+    try {
+      const userIndex = this.usersList.findIndex(({ nome }) => nome === ctx.request.params.nome);
+      if (userIndex == -1) {
+        const err = {
+          status: 404,
+          message: 'User not found'
+        }
+        throw err;
       }
-      throw err;
+      for ([key, value] of Object.entries(ctx.request.body)) {
+        if (this.usersList[userIndex][key] != undefined && value.length > 0) {
+          this.usersList[userIndex][key] = value;
+        }
+      }
+      status = 200;
+      body = this.usersList[userIndex];
     }
-    status = 200;
-    body = user;
+    catch (err) {
+      status = err.status == undefined ? 500 : err.status;
+      body = { err: err };
+    }
+    finally {
+      ctx.status = status;
+      ctx.body = body;
+    }
   }
-  catch (err) {
-    status = err.status == undefined ? 500 : err.status;
-    body = { err: err };
-  }
-  finally {
-    ctx.status = status;
-    ctx.body = body;
-  }
-});
 
-router.put('/user/:nome', async (ctx) => {
-  let status = undefined;
-  let body = '';
-  try {
-    const userIndex = global.usersList.findIndex(({ nome }) => nome === ctx.request.params.nome);
-    if (userIndex == -1) {
-      const err = {
-        status: 404,
-        message: 'User not found'
+  async delete(ctx) {
+    let status = undefined;
+    let body = '';
+    try {
+      const userIndex = this.usersList.findIndex(({ nome }) => nome === ctx.request.params.nome);
+      if (userIndex == -1) {
+        const err = {
+          status: 404,
+          message: 'User not found'
+        }
+        throw err;
       }
-      throw err;
+      const user = this.usersList.splice(userIndex, 1)[0];
+      status = 200;
+      body = user;
     }
-    let user = new User(ctx.request.body);
-    global.usersList[userIndex] = user;
-    status = 200;
-    body = { message: 'User updated' };
+    catch (err) {
+      status = err.status == undefined ? 500 : err.status;
+      body = { err: err };
+    }
+    finally {
+      ctx.status = status;
+      ctx.body = body;
+    }
   }
-  catch (err) {
-    status = err.status == undefined ? 500 : err.status;
-    body = { err: err };
-  }
-  finally {
-    ctx.status = status;
-    ctx.body = body;
-  }
-});
 
-router.patch('/user/:nome', async (ctx) => {
-  let status = undefined;
-  let body = '';
-  try {
-    const userIndex = global.usersList.findIndex(({ nome }) => nome === ctx.request.params.nome);
-    if (userIndex == -1) {
-      const err = {
-        status: 404,
-        message: 'User not found'
+  async getOne(ctx) {
+    let status = undefined;
+    let body = '';
+    try {
+      const user = this.usersList.find(({ nome }) => nome === ctx.request.params.nome);
+      if (!user) {
+        const err = {
+          status: 404,
+          message: 'User not found'
+        }
+        throw err;
       }
-      throw err;
+      status = 200;
+      body = user;
     }
-    for ([key,] of Object.entries(ctx.request.body)) {
-      if (global.usersList[userIndex][key] != undefined) {
-        global.usersList[userIndex][key] = ctx.request.body[key];
-      }
+    catch (err) {
+      status = err.status == undefined ? 500 : err.status;
+      body = { err: err };
     }
-    status = 200;
-    body = { message: 'User updated' };
+    finally {
+      ctx.status = status;
+      ctx.body = body;
+    }
   }
-  catch (err) {
-    status = err.status == undefined ? 500 : err.status;
-    body = { err: err };
-  }
-  finally {
-    ctx.status = status;
-    ctx.body = body;
-  }
-});
 
-router.delete('/user/:nome', async (ctx) => {
-  let status = undefined;
-  let body = '';
-  try {
-    const userIndex = global.usersList.findIndex(({ nome }) => nome === ctx.request.params.nome);
-    if (userIndex == -1) {
-      const err = {
-        status: 404,
-        message: 'User not found'
+  async getAll(ctx) {
+    let status = undefined;
+    let body = '';
+    try {
+      if (!this.usersList) {
+        const err = {
+          status: 500,
+          message: 'Something went wrong'
+        }
+        throw err;
       }
-      throw err;
+      status = 200;
+      body = { total: this.usersList.length, count: 0, rows: this.usersList }
     }
-    const user = global.usersList.splice(userIndex, 1)[0];
-    status = 200;
-    body = user;
+    catch (err) {
+      status = err.status == undefined ? 500 : err.status;
+      body = { err: err };
+    }
+    finally {
+      ctx.status = status;
+      ctx.body = body;
+    }
   }
-  catch (err) {
-    status = err.status == undefined ? 500 : err.status;
-    body = { err: err };
-  }
-  finally {
-    ctx.status = status;
-    ctx.body = body;
-  }
-});
+}
 
-module.exports = router;
+module.exports = UserController;
