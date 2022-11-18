@@ -23,7 +23,9 @@
   "dependencies": {
     "koa": "^2.13.0",
     "koa-bodyparser": "^4.3.0",
-    "koa-router": "^9.4.0"
+    "koa-router": "^9.4.0",
+    "sequelize": "^6.25.6",
+    "sqlite3": "^5.1.2"
   },
   "devDependencies": {
     "chai": "^4.2.0",
