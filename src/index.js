@@ -10,8 +10,11 @@ const PORT = process.env.PORT || 3000;
 const Koa = require('koa');
 const Router = require('koa-router');
 const bodyParser = require('koa-bodyparser');
+const yamljs = require('yamljs');
+const { koaSwagger } = require('koa2-swagger-ui');
 
 const userController = require('./controllers/userController');
+const spec = yamljs.load('./api.yaml');
 
 const koa = new Koa();
 const router = new Router();
@@ -23,6 +26,7 @@ router.get('/', async (ctx) => {
 
 koa
   .use(bodyParser())
+  .use(koaSwagger({ routePrefix: '/docs', swaggerOptions: { spec }}))
   .use(router.routes())
   .use(router.allowedMethods())
   .use(userController.routes())
