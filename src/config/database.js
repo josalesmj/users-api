@@ -3,5 +3,6 @@ module.exports = {
   storage: './database.sqlite',
   define: {
     timestamps: true,
-  }
+  },
+  logging: false
 }
