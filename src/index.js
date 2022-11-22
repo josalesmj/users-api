@@ -5,6 +5,8 @@
 //https://github.com/ZijianHe/koa-router
 
 // todas as configuraçoes devem ser passadas via environment variables
+require('dotenv').config();
+
 const PORT = process.env.PORT || 3000;
 
 const Koa = require('koa');
@@ -17,7 +19,6 @@ const { koaSwagger } = require('koa2-swagger-ui');
 const dbConnection = require('./database/index');
 const spec = yamljs.load('./api.yaml');
 const userRoute = require('./routes/user');
-const userController = require('./controllers/userController');
 
 const koa = new Koa();
 const router = new Router();
