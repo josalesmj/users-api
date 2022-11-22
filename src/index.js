@@ -13,11 +13,22 @@ const bodyParser = require('koa-bodyparser');
 const yamljs = require('yamljs');
 const { koaSwagger } = require('koa2-swagger-ui');
 
-const userController = require('./controllers/userController');
+
+const dbConnection = require('./database/index');
 const spec = yamljs.load('./api.yaml');
+const userRoute = require('./routes/user');
+const userController = require('./controllers/userController');
 
 const koa = new Koa();
 const router = new Router();
+
+dbConnection
+  .authenticate().then(() => {
+    console.log('Conexão com banco de dados realizada.');
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
 //rota simples pra testar se o servidor está online
 router.get('/', async (ctx) => {
@@ -29,8 +40,8 @@ koa
   .use(koaSwagger({ routePrefix: '/docs', swaggerOptions: { spec }}))
   .use(router.routes())
   .use(router.allowedMethods())
-  .use(userController.routes())
-  .use(userController.allowedMethods());
+  .use(userRoute.routes())
+  .use(userRoute.allowedMethods());
 
 const server = koa.listen(PORT);
 
