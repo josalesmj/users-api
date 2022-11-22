@@ -30,7 +30,13 @@ class UserController {
   }
 
   async getAll(ctx) {
-    let { status, body } = await userService.findAll();
+    let { status, body } = await userService.findAll(ctx.request);
+    ctx.status = status;
+    ctx.body = body;
+  }
+
+  async getByPage(ctx) {
+    let { status, body } = await userService.getByPage(ctx.request);
     ctx.status = status;
     ctx.body = body;
   }

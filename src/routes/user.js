@@ -5,11 +5,12 @@ const UserController = require('../controllers/UserController');
 const userController = new UserController();
 
 router
-  .get('/users', userController.getAll.bind(userController))
-  .post('/user', userController.create.bind(userController))
-  .get('/user/:nome', userController.getOne.bind(userController))
-  .put('/user/:nome', userController.update.bind(userController))
-  .patch('/user/:nome', userController.update.bind(userController))
-  .delete('/user/:nome', userController.delete.bind(userController));
+  .get('/users', userController.getAll)
+  .get('/users/:limit/:page', userController.getByPage)
+  .post('/user', userController.create)
+  .get('/user/:nome', userController.getOne)
+  .put('/user/:nome', userController.update)
+  .patch('/user/:nome', userController.update)
+  .delete('/user/:nome', userController.delete)
 
 module.exports = router;
