@@ -15,7 +15,6 @@ const bodyParser = require('koa-bodyparser');
 const yamljs = require('yamljs');
 const { koaSwagger } = require('koa2-swagger-ui');
 
-
 const dbConnection = require('./database/index');
 const spec = yamljs.load('./api.yaml');
 const userRoute = require('./routes/user');
