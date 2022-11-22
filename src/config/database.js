@@ -1,8 +1,16 @@
+require('dotenv').config();
+
+const path = require('path');
+
 module.exports = {
-  dialect: 'sqlite',
-  storage: './database.sqlite',
-  define: {
-    timestamps: true,
+  dev: {
+    dialect: 'sqlite',
+    storage: path.join(process.cwd(), process.env.DB_NAME + '.sqlite'),
+    logging: process.env.DB_LOGGING == 'false' ? false : console.log
   },
-  logging: false
-}
+  test: {
+    dialect: 'sqlite',
+    storage: ':memory:',
+    logging: process.env.DB_LOGGING == 'false' ? false : console.log
+  },
+}[process.env.NODE_ENV];

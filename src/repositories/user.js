@@ -42,7 +42,7 @@ exports.remove = (async (nome) => {
 exports.getByPage = (async (page, limit) => {
   let users = await User.findAndCountAll({
     attributes: { exclude: ['createdAt', 'updatedAt', 'deletedAt'] },
-    offset: page,//primeira o offset é 0, próxima o offset é 10, depois 20... para um limit de 10.
+    offset: page,
     limit: limit,
     raw: true
   });
