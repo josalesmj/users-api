@@ -9,6 +9,7 @@
 //https://developer.mozilla.org/pt-PT/docs/Web/HTTP/Status (http codes)
 
 const app = require('../src/index.js');
+const UserModel = require('../src/models/User');
 
 const assert = require('assert');
 const chai = require('chai')
@@ -19,25 +20,6 @@ chai.use(chaiHttp);
 chai.use(chaiJson);
 
 const expect = chai.expect;
-
-//Define o minimo de campos que o usuário deve ter. Geralmente deve ser colocado em um arquivo separado
-const userSchema = {
-  title: "Schema do Usuario, define como é o usuario, linha 24 do teste",
-  type: "object",
-  required: ['nome', 'email', 'idade'],
-  properties: {
-    nome: {
-      type: 'string'
-    },
-    email: {
-      type: 'string'
-    },
-    idade: {
-      type: 'number',
-      minimum: 18
-    }
-  }
-}
 
 //Inicio dos testes
 
@@ -143,8 +125,8 @@ describe('Testes da aplicaçao', () => {
       .post('/user')
       .send({ nome: "Enzo", email: "jose.enzo@devoz.com.br", idade: 17 })
       .end(function (err, res) {
-        expect(res).to.have.status(403);
-        expect(res.body.err.message).to.be.equal('Forbidden. User must be at least 18 old');
+        expect(res).to.have.status(400);
+        expect(res.body.err.message).to.be.equal('O usuário deve ser maior de idade');
         done();
       });
   });
@@ -165,7 +147,7 @@ describe('Testes da aplicaçao', () => {
       .end(function (err, res) {
         expect(err).to.be.null;
         expect(res).to.have.status(200);
-        expect(res.body).to.be.jsonSchema(userSchema);
+        expect(res.body).to.be.jsonSchema(UserModel);
         done();
       });
   });
@@ -176,7 +158,7 @@ describe('Testes da aplicaçao', () => {
       .end(function (err, res) {
         expect(err).to.be.null;
         expect(res).to.have.status(200);
-        expect(res.body).to.be.jsonSchema(userSchema);
+        expect(res.body).to.be.jsonSchema(UserModel);
         done();
       });
   });
@@ -199,7 +181,7 @@ describe('Testes da aplicaçao', () => {
       .end(function (err, res) {
         expect(err).to.be.null;
         expect(res).to.have.status(200);
-        expect(res.body).to.be.jsonSchema(userSchema);
+        expect(res.body).to.be.jsonSchema(UserModel);
         expect(res.body.idade).to.be.equal(40);
         done();
       });
@@ -223,7 +205,7 @@ describe('Testes da aplicaçao', () => {
       .end(function (err, res) {
         expect(err).to.be.null;
         expect(res).to.have.status(200);
-        expect(res.body).to.be.jsonSchema(userSchema);
+        expect(res.body).to.be.jsonSchema(UserModel);
         done();
       });
   });
