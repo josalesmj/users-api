@@ -5,29 +5,43 @@
 //https://github.com/ZijianHe/koa-router
 
 // todas as configuraçoes devem ser passadas via environment variables
+require('dotenv').config();
+
 const PORT = process.env.PORT || 3000;
 
 const Koa = require('koa');
 const Router = require('koa-router');
+const bodyParser = require('koa-bodyparser');
+const yamljs = require('yamljs');
+const { koaSwagger } = require('koa2-swagger-ui');
+
+const dbConnection = require('./database/index');
+const spec = yamljs.load('./api.yaml');
+const userRoute = require('./routes/user');
 
 const koa = new Koa();
-var router = new Router();
+const router = new Router();
+
+dbConnection
+  .authenticate().then(() => {
+    console.log('Conexão com banco de dados realizada.');
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
 //rota simples pra testar se o servidor está online
 router.get('/', async (ctx) => {
   ctx.body = `Seu servidor esta rodando em http://localhost:${PORT}`; //http://localhost:3000/
 });
 
-//Uma rota de exemplo simples aqui.
-//As rotas devem ficar em arquivos separados, /src/controllers/userController.js por exemplo
-router.get('/users', async (ctx) => {
-    ctx.status = 200;
-    ctx.body = {total:0, count: 0, rows:[]}
-});
-
 koa
+  .use(bodyParser())
+  .use(koaSwagger({ routePrefix: '/docs', swaggerOptions: { spec }}))
   .use(router.routes())
-  .use(router.allowedMethods());
+  .use(router.allowedMethods())
+  .use(userRoute.routes())
+  .use(userRoute.allowedMethods());
 
 const server = koa.listen(PORT);
 
