@@ -6,12 +6,8 @@ exports.create = (async (request) => {
   try {
     let user = request.body;
     user.nome = user.nome.toLowerCase();
-    if (user.idade < 18) {
-      const err = { message: 'Forbidden. User must be at least 18 old' }
-      status = 403;
-      throw err;
-    }
-    else if (await userRepository.findOne(user.nome)) {
+    
+    if (await userRepository.findOne(user.nome)) {
       const err = { message: 'Conflict. User already exists' }
       status = 409;
       throw err;
