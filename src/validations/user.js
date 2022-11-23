@@ -58,3 +58,13 @@ exports.validatePartialUser = (async (ctx, next) => {
   
   return next();
 });
+
+exports.validateLimitAndPage = (async (ctx, next) => {
+  if (isNaN(ctx.request.params.limit) || isNaN(ctx.request.params.page)) {
+    ctx.status = 400;
+    ctx.body = { err: { message: 'Limite e o número de página devem ser números. Por exemplo: users/10/2' } };
+    return;
+  }
+
+  return next();
+});
