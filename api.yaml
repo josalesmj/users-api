@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: API Test
   description: >
-    This is a example test
+    This is API to register users
   version: 1.0.0
 host: "localhost:3000"
 schemes:
@@ -17,6 +17,22 @@ paths:
         - user
       summary: Get a list of users
       description: Get a list with all registed users
+      operationId: getListOfAllUsers
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+  /users/{limit}/{page}:
+    get:
+      tags:
+        - user
+      summary: Get a list of users paginated by limit
+      description: Get a list with paginated users
       operationId: getListOfUsers
       responses:
         '200':
@@ -26,7 +42,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/User'          
+                  $ref: '#/components/schemas/User'
   /user:
     post:
       tags:
@@ -45,8 +61,7 @@ paths:
           description: successful operation
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/User'
+              type: object
   /user/{userName}:
     get:
       tags:
@@ -94,10 +109,12 @@ paths:
           description: successful operation
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/User'
+              type: object
         '404':
           description: User not found
+          content:
+            application/json:
+              type: object
     patch:
       tags:
         - user
@@ -122,10 +139,12 @@ paths:
           description: successful operation
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/User'
+              type: object
         '404':
           description: User not found
+          content:
+            application/json:
+              type: object
     delete:
       tags:
         - user
@@ -144,10 +163,12 @@ paths:
           description: successful operation
           content:
             application/json:
-              schema:
-                $ref: ´#/components/schemas/User´
+              type: object
         '404':
           description: Invalid user's name
+          content:
+            application/json:
+              type: object
 components:
   schemas:
     User:
