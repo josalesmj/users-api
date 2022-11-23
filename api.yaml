@@ -34,6 +34,19 @@ paths:
       summary: Get a list of users paginated by limit
       description: Get a list with paginated users
       operationId: getListOfUsers
+      parameters:
+        - name: limit
+          in: path
+          description: the number of users to return
+          required: true
+          schema:
+            type: integer
+        - name: page
+          in: path
+          description: the number of the page of users
+          required: true
+          schema:
+            type: integer
       responses:
         '200':
           description: successful operation
@@ -43,6 +56,11 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
+        '400':
+          description: bad request
+          content:
+            application/json:
+              type: object
   /user:
     post:
       tags:
@@ -59,6 +77,11 @@ paths:
       responses:
         '201':
           description: successful operation
+          content:
+            application/json:
+              type: object
+        '400':
+          description: bad request
           content:
             application/json:
               type: object
@@ -110,6 +133,11 @@ paths:
           content:
             application/json:
               type: object
+        '400':
+          description: bad request
+          content:
+            application/json:
+              type: object
         '404':
           description: User not found
           content:
@@ -137,6 +165,11 @@ paths:
       responses:
         '200':
           description: successful operation
+          content:
+            application/json:
+              type: object
+        '400':
+          description: bad request
           content:
             application/json:
               type: object
