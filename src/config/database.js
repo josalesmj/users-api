@@ -5,7 +5,7 @@ const path = require('path');
 module.exports = {
   dev: {
     dialect: 'sqlite',
-    storage: path.join(process.cwd(), process.env.DB_NAME + '.sqlite'),
+    storage: path.join(process.cwd(), (process.env.DB_NAME || 'database') + '.sqlite'),
     logging: process.env.DB_LOGGING == 'false' ? false : console.log
   },
   test: {
