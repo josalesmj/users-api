@@ -153,7 +153,6 @@ describe('Testes da aplicaçao', () => {
     chai.request(app)
       .get('/user/naoExiste')
       .end(function (err, res) {
-        //expect(err.response.body.error).to.be.equal('User not found'); //possivelmente forma errada de verificar a mensagem de erro
         expect(res.body.err.message).to.be.equal('User not found');
         expect(res).to.have.status(404);
         done();
@@ -235,7 +234,7 @@ describe('Testes da aplicaçao', () => {
       .end(function (err, res) {
         expect(err).to.be.null;
         expect(res).to.have.status(200);
-        expect(res.body).to.be.jsonSchema(userSchema);
+        expect(res.body.message).to.be.equal('User deleted');
         done();
       });
   });

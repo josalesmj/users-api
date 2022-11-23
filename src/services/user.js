@@ -28,7 +28,7 @@ exports.create = (async (request) => {
       body = { err: { message: 'Internal Server Error' } };
     }
     else {
-      body = { err: err.message };
+      body = { err: { message: err.message } };
     }
   }
   finally {
@@ -53,7 +53,7 @@ exports.findAll = (async () => {
       body = { err: { message: 'Internal Server Error' } };
     }
     else {
-      body = { err: err.message };
+      body = { err: { message: err.message } };
     }
   }
   finally {
@@ -87,7 +87,7 @@ exports.findOne = (async (request) => {
         body = { err: { message: 'Internal Server Error' } };
       }
       else {
-        body = { err: err.message };
+        body = { err: { message: err.message } };
       }
     }
   }
@@ -127,7 +127,7 @@ exports.update = (async (request) => {
       body = { err: { message: 'Internal Server Error' } };
     }
     else {
-      body = { err: err.message };
+      body = { err: { message: err.message } };
     }
   }
   finally {
@@ -159,7 +159,7 @@ exports.remove = (async (request) => {
       body = { err: { message: 'Internal Server Error' } };
     }
     else {
-      body = { err: err.message };
+      body = { err: { message: err.message } };
     }
   }
   finally {
@@ -185,7 +185,7 @@ exports.getByPage = (async (request) => {
       body = { err: { message: 'Internal Server Error' } };
     }
     else {
-      body = { err: err.message };
+      body = { err: { message: err.message } };
     }
   }
   finally {
