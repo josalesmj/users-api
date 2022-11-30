@@ -15,6 +15,7 @@ const assert = require('assert');
 const chai = require('chai')
 const chaiHttp = require('chai-http');
 const chaiJson = require('chai-json-schema');
+const httpCode = require('http-codes');
 
 chai.use(chaiHttp);
 chai.use(chaiJson);
@@ -37,7 +38,7 @@ describe('Testes da aplicaçao', () => {
       .get('/')
       .end(function (err, res) {
         expect(err).to.be.null;
-        expect(res).to.have.status(200);
+        expect(res).to.have.status(httpCode.OK);
         done();
       });
   });
@@ -47,7 +48,7 @@ describe('Testes da aplicaçao', () => {
       .get('/users')
       .end(function (err, res) {
         expect(err).to.be.null;
-        expect(res).to.have.status(200);
+        expect(res).to.have.status(httpCode.OK);
         expect(res.body.rows).to.eql([]);
         done();
       });
@@ -59,7 +60,7 @@ describe('Testes da aplicaçao', () => {
       .send({ nome: "raupp", email: "jose.raupp@devoz.com.br", idade: 35 })
       .end(function (err, res) {
         expect(err).to.be.null;
-        expect(res).to.have.status(201);
+        expect(res).to.have.status(httpCode.CREATED);
         done();
       });
   });
@@ -70,7 +71,7 @@ describe('Testes da aplicaçao', () => {
       .send({ nome: "maria", email: "jose.maria@devoz.com.br", idade: 35 })
       .end(function (err, res) {
         expect(err).to.be.null;
-        expect(res).to.have.status(201);
+        expect(res).to.have.status(httpCode.CREATED);
         done();
       });
   });
@@ -81,7 +82,7 @@ describe('Testes da aplicaçao', () => {
       .send({ nome: "raimundo", email: "jose.raimundo@devoz.com.br", idade: 35 })
       .end(function (err, res) {
         expect(err).to.be.null;
-        expect(res).to.have.status(201);
+        expect(res).to.have.status(httpCode.CREATED);
         done();
       });
   });
@@ -92,7 +93,7 @@ describe('Testes da aplicaçao', () => {
       .send({ nome: "Fernando", email: "jose.Fernando@devoz.com.br", idade: 35 })
       .end(function (err, res) {
         expect(err).to.be.null;
-        expect(res).to.have.status(201);
+        expect(res).to.have.status(httpCode.CREATED);
         done();
       });
   });
@@ -103,7 +104,7 @@ describe('Testes da aplicaçao', () => {
       .send({ nome: "Emanuel", email: "jose.Emanuel@devoz.com.br", idade: 35 })
       .end(function (err, res) {
         expect(err).to.be.null;
-        expect(res).to.have.status(201);
+        expect(res).to.have.status(httpCode.CREATED);
         done();
       });
   });
@@ -114,7 +115,7 @@ describe('Testes da aplicaçao', () => {
       .send({ nome: "Vinicius", email: "jose.Vinicius@devoz.com.br", idade: 35 })
       .end(function (err, res) {
         expect(err).to.be.null;
-        expect(res).to.have.status(201);
+        expect(res).to.have.status(httpCode.CREATED);
         done();
       });
   });
@@ -125,7 +126,7 @@ describe('Testes da aplicaçao', () => {
       .post('/user')
       .send({ nome: "Enzo", email: "jose.enzo@devoz.com.br", idade: 17 })
       .end(function (err, res) {
-        expect(res).to.have.status(400);
+        expect(res).to.have.status(httpCode.BAD_REQUEST);
         expect(res.body.err.message).to.be.equal('O usuário deve ser maior de idade');
         done();
       });
@@ -136,7 +137,7 @@ describe('Testes da aplicaçao', () => {
       .get('/user/naoExiste')
       .end(function (err, res) {
         expect(res.body.err.message).to.be.equal('User not found');
-        expect(res).to.have.status(404);
+        expect(res).to.have.status(httpCode.NOT_FOUND);
         done();
       });
   });
@@ -146,7 +147,7 @@ describe('Testes da aplicaçao', () => {
       .get('/user/raupp')
       .end(function (err, res) {
         expect(err).to.be.null;
-        expect(res).to.have.status(200);
+        expect(res).to.have.status(httpCode.OK);
         expect(res.body).to.be.jsonSchema(UserModel);
         done();
       });
@@ -157,7 +158,7 @@ describe('Testes da aplicaçao', () => {
       .get('/user/Emanuel')
       .end(function (err, res) {
         expect(err).to.be.null;
-        expect(res).to.have.status(200);
+        expect(res).to.have.status(httpCode.OK);
         expect(res.body).to.be.jsonSchema(UserModel);
         done();
       });
@@ -169,7 +170,7 @@ describe('Testes da aplicaçao', () => {
       .send({ idade: 40 })
       .end(function (err, res) {
         expect(err).to.be.null;
-        expect(res).to.have.status(200);
+        expect(res).to.have.status(httpCode.OK);
         expect(res.body.message).to.be.equal('User updated');
         done();
       });
@@ -180,7 +181,7 @@ describe('Testes da aplicaçao', () => {
       .get('/user/Emanuel')
       .end(function (err, res) {
         expect(err).to.be.null;
-        expect(res).to.have.status(200);
+        expect(res).to.have.status(httpCode.OK);
         expect(res.body).to.be.jsonSchema(UserModel);
         expect(res.body.idade).to.be.equal(40);
         done();
@@ -193,7 +194,7 @@ describe('Testes da aplicaçao', () => {
       .send({ nome: "Emannuel", email: "jose.Emanuel@devoz.com.br", idade: 35 })
       .end(function (err, res) {
         expect(err).to.be.null;
-        expect(res).to.have.status(200);
+        expect(res).to.have.status(httpCode.OK);
         expect(res.body.message).to.be.equal('User updated');
         done();
       });
@@ -204,7 +205,7 @@ describe('Testes da aplicaçao', () => {
       .get('/user/Emannuel')
       .end(function (err, res) {
         expect(err).to.be.null;
-        expect(res).to.have.status(200);
+        expect(res).to.have.status(httpCode.OK);
         expect(res.body).to.be.jsonSchema(UserModel);
         done();
       });
@@ -215,7 +216,7 @@ describe('Testes da aplicaçao', () => {
       .delete('/user/raupp')
       .end(function (err, res) {
         expect(err).to.be.null;
-        expect(res).to.have.status(200);
+        expect(res).to.have.status(httpCode.OK);
         expect(res.body.message).to.be.equal('User deleted');
         done();
       });
@@ -226,7 +227,7 @@ describe('Testes da aplicaçao', () => {
       .get('/user/raupp')
       .end(function (err, res) {
         expect(res.body.err.message).to.be.equal('User not found');
-        expect(res).to.have.status(404);
+        expect(res).to.have.status(httpCode.NOT_FOUND);
         done();
       });
   });
@@ -236,7 +237,7 @@ describe('Testes da aplicaçao', () => {
       .get('/users')
       .end(function (err, res) {
         expect(err).to.be.null;
-        expect(res).to.have.status(200);
+        expect(res).to.have.status(httpCode.OK);
         expect(res.body.total).to.be.at.least(5);
         done();
       });
