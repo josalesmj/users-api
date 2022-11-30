@@ -36,7 +36,11 @@ router.get('/', async (ctx) => {
 });
 
 koa
-  .use(bodyParser())
+  .use(bodyParser({
+    onerror: function (err, ctx) {
+      ctx.throw(400, 'Bad Request');
+    }
+  }))
   .use(koaSwagger({ routePrefix: '/docs', swaggerOptions: { spec }}))
   .use(async (ctx, next) => {
     try {
