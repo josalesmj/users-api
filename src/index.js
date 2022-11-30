@@ -38,6 +38,21 @@ router.get('/', async (ctx) => {
 koa
   .use(bodyParser())
   .use(koaSwagger({ routePrefix: '/docs', swaggerOptions: { spec }}))
+  .use(async (ctx, next) => {
+    try {
+      await next();
+    }
+    catch (err) {
+      if (err == undefined) {
+        ctx.body = { err: { message: 'Internal Server Error' } };
+        ctx.status = 500
+      }
+      else {
+        ctx.body = { err: { message: err.message } };
+        ctx.status = err.status
+      }
+    }
+  })
   .use(router.routes())
   .use(router.allowedMethods())
   .use(userRoute.routes())
