@@ -1,3 +1,4 @@
+const httpCode = require('http-codes');
 const userRepository = require('../repositories/user');
 
 exports.create = (async (request) => {
@@ -7,13 +8,13 @@ exports.create = (async (request) => {
   user.nome = user.nome.toLowerCase();
   
   if (await userRepository.findOne(user.nome)) {
-    const err = { message: 'Conflict. User already exists', status: 409 };
+    const err = { message: 'Conflict. User already exists', status: httpCode.CONFLICT };
     throw err;
   }
 
   await userRepository.create(user)
     .then(() => {
-      status = 201;
+      status = httpCode.CREATED;
       body = { message: 'User created' };;
     });
 
@@ -26,7 +27,7 @@ exports.findAll = (async () => {
 
   await userRepository.findAll()
     .then(users => {
-      status = 200;
+      status = httpCode.OK;
       body = { total: users.rows.length, count: users.count, rows: users.rows };
     });
 
@@ -40,10 +41,10 @@ exports.findOne = (async (request) => {
   await userRepository.findOne(request.params.nome.toLowerCase())
     .then(user => {
       if (!user) {
-        const err = { message: 'User not found', status: 404 };
+        const err = { message: 'User not found', status: httpCode.NOT_FOUND };
         throw err;
       }
-      status = 200;
+      status = httpCode.OK;
       body = user;
     });
 
@@ -63,13 +64,13 @@ exports.update = (async (request) => {
   await userRepository.findOne(nome)
     .then(async (result) => {
       if (!result) {
-        const err = { message: 'User not found', status: 404 };
+        const err = { message: 'User not found', status: httpCode.NOT_FOUND };
         throw err;
       }
       else {
         await userRepository.update(nome, user)
           .then(() => {
-            status = 200;
+            status = httpCode.OK;
             body = { message: 'User updated' };
           });
       }
@@ -85,12 +86,12 @@ exports.remove = (async (request) => {
   await userRepository.findOne(request.params.nome.toLowerCase())
     .then(async (user) => {
       if (!user) {
-        const err = { message: 'User not found', status: 404 };
+        const err = { message: 'User not found', status: httpCode.NOT_FOUND };
         throw err;
       }
       await userRepository.remove(request.params.nome.toLowerCase())
         .then(() => {
-          status = 200;
+          status = httpCode.OK;
           body = { message: 'User deleted' };
         });
     });
@@ -106,7 +107,7 @@ exports.getByPage = (async (request) => {
 
   await userRepository.getByPage(offset, limit)
     .then(users => {
-      status = 200;
+      status = httpCode.OK;
       body = { total: users.rows.length, count: users.count, rows: users.rows };
     });
 

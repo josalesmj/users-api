@@ -14,6 +14,7 @@ const Router = require('koa-router');
 const bodyParser = require('koa-bodyparser');
 const yamljs = require('yamljs');
 const { koaSwagger } = require('koa2-swagger-ui');
+const httpCode = require('http-codes');
 
 const dbConnection = require('./database/index');
 const spec = yamljs.load('./api.yaml');
@@ -45,11 +46,11 @@ koa
     catch (err) {
       if (err == undefined) {
         ctx.body = { err: { message: 'Internal Server Error' } };
-        ctx.status = 500
+        ctx.status = httpCode.INTERNAL_SERVER_ERROR;
       }
       else {
         ctx.body = { err: { message: err.message } };
-        ctx.status = err.status
+        ctx.status = err.status;
       }
     }
   })
