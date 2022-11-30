@@ -33,6 +33,11 @@ describe('Um simples conjunto de testes', function () {
 
 //testes da aplicação
 describe('Testes da aplicaçao', () => {
+
+  after(async function () {
+    await UserModel.drop();
+  });
+
   it('o servidor esta online', function (done) {
     chai.request(app)
       .get('/')
@@ -242,4 +247,4 @@ describe('Testes da aplicaçao', () => {
         done();
       });
   });
-})
+});
