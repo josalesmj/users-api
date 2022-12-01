@@ -14,11 +14,12 @@ const Router = require('koa-router');
 const bodyParser = require('koa-bodyparser');
 const yamljs = require('yamljs');
 const { koaSwagger } = require('koa2-swagger-ui');
-const httpCode = require('http-codes');
 
 const dbConnection = require('./database/index');
 const spec = yamljs.load('./api.yaml');
 const userRoute = require('./routes/user');
+const authRoute = require('./routes/auth');
+const errorHandle = require('./middlewares/errorHandle');
 
 const koa = new Koa();
 const router = new Router();
@@ -39,25 +40,13 @@ router.get('/', async (ctx) => {
 koa
   .use(bodyParser())
   .use(koaSwagger({ routePrefix: '/docs', swaggerOptions: { spec }}))
-  .use(async (ctx, next) => {
-    try {
-      await next();
-    }
-    catch (err) {
-      if (err == undefined) {
-        ctx.body = { err: { message: 'Internal Server Error' } };
-        ctx.status = httpCode.INTERNAL_SERVER_ERROR;
-      }
-      else {
-        ctx.body = { err: { message: err.message } };
-        ctx.status = err.status;
-      }
-    }
-  })
+  .use(errorHandle)
   .use(router.routes())
   .use(router.allowedMethods())
   .use(userRoute.routes())
-  .use(userRoute.allowedMethods());
+  .use(userRoute.allowedMethods())
+  .use(authRoute.routes())
+  .use(authRoute.allowedMethods());
 
 const server = koa.listen(PORT);
 
